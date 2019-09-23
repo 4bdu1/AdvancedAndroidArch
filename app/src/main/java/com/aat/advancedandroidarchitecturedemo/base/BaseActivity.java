@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.aat.advancedandroidarchitecturedemo.R;
 import com.aat.advancedandroidarchitecturedemo.di.Injector;
 import com.aat.advancedandroidarchitecturedemo.di.ScreenInjector;
+import com.aat.advancedandroidarchitecturedemo.ui.ScreenNavigator;
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.ControllerChangeHandler;
@@ -29,6 +30,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Inject
     ScreenInjector screenInjector;
+    @Inject
+    ScreenNavigator screenNavigator;
 
     private String instanceId;
     private Router router;
@@ -49,12 +52,24 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         router = Conductor.attachRouter(this, screenContainer, savedInstanceState);
+        screenNavigator.initWithRouter(router, initialScreen());
         monitorBackStack();
         super.onCreate(savedInstanceState);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if (!screenNavigator.pop()) {
+            super.onBackPressed();
+        }
+
+    }
+
     @LayoutRes
     protected abstract int layoutRes();
+
+    protected abstract Controller initialScreen();
 
 
     @Override
@@ -70,7 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        screenNavigator.clear();
         if (isFinishing()) {
             Injector.clearComponent(this);
         }
