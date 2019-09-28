@@ -1,7 +1,6 @@
 package com.aat.advancedandroidarchitecturedemo.trending;
 
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,7 +28,7 @@ public class TrendingReposController extends BaseController {
     @BindView(R.id.repo_list)
     RecyclerView repoList;
     @BindView(R.id.loading_indicator)
-    ProgressBar loadingView;
+    View loadingView;
     @BindView(R.id.tv_error)
     TextView errorText;
 
@@ -47,13 +46,12 @@ public class TrendingReposController extends BaseController {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(loading -> {
                     loadingView.setVisibility(loading ? View.VISIBLE : View.GONE);
-                    repoList.setVisibility(loading ? View.VISIBLE : View.GONE);
+                    repoList.setVisibility(loading ? View.GONE : View.VISIBLE);
                     errorText.setVisibility(loading ? View.GONE : errorText.getVisibility());
                 }),
                 viewModel.repos()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(((RepoAdapter) repoList.getAdapter())::setData),
-
                 viewModel.error()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(errorRes -> {
