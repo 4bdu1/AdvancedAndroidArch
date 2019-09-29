@@ -1,6 +1,7 @@
 package com.aat.advancedandroidarchitecturedemo.base;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,14 @@ public abstract class BaseController extends Controller {
 
     private boolean injected = false;
     private Unbinder unbinder;
+
+    public BaseController() {
+        super();
+    }
+
+    public BaseController(Bundle bundle) {
+        super(bundle);
+    }
 
     @Override
     protected void onContextAvailable(@NonNull Context context) {
